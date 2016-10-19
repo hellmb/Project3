@@ -30,8 +30,8 @@ vector3 &vector3::operator+=(double rhs){
 
 vector3 &vector3::operator+=(vector3 rhs){
     comp[0] += rhs[0];
-    comp[1] += rhs[0];
-    comp[2] += rhs[0];
+    comp[1] += rhs[1];
+    comp[2] += rhs[1];
     return *this;
 }
 
@@ -44,8 +44,8 @@ vector3 &vector3::operator*=(double rhs){
 
 vector3 &vector3::operator*=(vector3 rhs){
     comp[0] *= rhs[0];
-    comp[1] *= rhs[0];
-    comp[2] *= rhs[0];
+    comp[1] *= rhs[1];
+    comp[2] *= rhs[2];
     return *this;
 }
 
@@ -58,8 +58,8 @@ vector3 &vector3::operator/=(double rhs){
 
 vector3 &vector3::operator/=(vector3 rhs){
     comp[0] /= rhs[0];
-    comp[1] /= rhs[0];
-    comp[2] /= rhs[0];
+    comp[1] /= rhs[1];
+    comp[2] /= rhs[2];
     return *this;
 }
 
@@ -72,8 +72,8 @@ vector3 &vector3::operator-=(double rhs){
 
 vector3 &vector3::operator-=(vector3 rhs){
     comp[0] -= rhs[0];
-    comp[1] -= rhs[0];
-    comp[2] -= rhs[0];
+    comp[1] -= rhs[1];
+    comp[2] -= rhs[2];
     return *this;
 }
 
