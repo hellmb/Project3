@@ -1,6 +1,12 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
+#include <string>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
 class vector3 {
 
 public:
@@ -17,10 +23,6 @@ public:
     double y() { return comp[1]; }
     double z() { return comp[2]; }
 
-    //double vx() { return comp[0]; }
-    //double vy() { return comp[1]; }
-    //double vz() { return comp[2]; }
-
     // allows us to index in two different ways
     double &operator() (int index) { return comp[index]; }
     double &operator[] (int index) { return comp[index]; }
@@ -35,6 +37,15 @@ public:
 
     double length_squared();
     double length();
+
+    vector3 cross(vector3 otherVector);
+    double dot(vector3 otherVector);
+    void normalize();
+    vector3 normalized();
+
+    void print();
+    void print(string name);
+    friend ostream& operator<<(ostream& os, const vector3& myVector);
 
 };
 

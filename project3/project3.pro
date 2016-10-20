@@ -5,8 +5,14 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     vector3.cpp \
-    planet.cpp
+    planet.cpp \
+    solarsystem.cpp \
+    euler.cpp \
+    verlet.cpp
 
 HEADERS += \
     vector3.h \
-    planet.h
+    planet.h \
+    solarsystem.h \
+    euler.h \
+    verlet.h
