@@ -54,19 +54,69 @@ void SolarSystem::ForceAndEnergy(){
             //cout << body2.force(0) << " " << body2.force(1) << " " << body2.force(2) << endl;
             //cout << body2.force(1) << endl;
 
-            // updating potential energy
-            E_pot += - ( m_G * body1.mass ) / dr;
+            // updating energy and angular momentum
+            E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
         }
 
         E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
     }
 }
 
+void SolarSystem::ForceMercury(){
+
+    E_kin = 0;
+    E_pot = 0;
+
+    double m_G = 4 * M_PI * M_PI;
+    double c = 2.99e8;
+
+    for(Planet &body : planets){
+        // reset forces on all planets
+        body.force.zeros();
+    }
+
+    for(int i = 0; i < NumberOfPlanets(); i++){
+        Planet &body1 = planets[i];
+        for(int j = i+1; j < NumberOfPlanets(); j++){
+            Planet &body2 = planets[j];
+            vector3 dr_vector = body1.position - body2.position;
+            double dr = dr_vector.length();
+
+            body1.force -= ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * angumom * angumom) / (dr * dr * c * c) );
+            body2.force += (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr);
+
+            // updating energy and angular momentum
+            E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
+        }
+
+        E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
+    }
+}
+}
+
+double SolarSystem::KineticEnergy() const {
+
+    return E_kin;
+}
+
+double SolarSystem::PotentialEnergy() const {
+
+    return E_pot;
+}
+
+double SolarSystem::TotalEnergy() const {
+
+    return E_kin + E_pot;
+}
+
 void SolarSystem::WriteToFile(string filename, string filename2){
-    ofstream myfile, myfile2;
-    //ios_base::app -> appends new elements to file, instead of overwriting them
-    myfile.open(filename.c_str(), ios_base::app);
-    myfile2.open(filename2.c_str(), ios_base::app);
+    if(!myfile.is_open()) {
+        myfile.open(filename.c_str(), ios_base::out);
+    }
+
+    if (!myfile2.is_open()){
+        myfile2.open(filename2.c_str(), ios_base::out);
+    }
 
     //myfile << "Number of planets in solar system: " << NumberOfPlanets() << endl;
     for( Planet &body : planets ){
@@ -78,6 +128,4 @@ void SolarSystem::WriteToFile(string filename, string filename2){
         myfile2 << body.velocity.x() << " " << body.velocity.y() << " " << body.velocity.z() << "\n";
     }
 
-    myfile.close();
-    myfile2.close();
 }

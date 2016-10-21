@@ -9,6 +9,7 @@
 class SolarSystem{
 public:
     SolarSystem();
+    std::ofstream myfile, myfile2;
 
     double E_kin;
     double E_pot;
@@ -26,9 +27,9 @@ public:
     // write to file
     void WriteToFile(string filename, string filename2);
 
-    //double KineticEnergy();
-    //double PotentialEnergy();
-    //double TotalEnergy();
+    double KineticEnergy() const;
+    double PotentialEnergy() const;
+    double TotalEnergy() const;
 
     vector<Planet> planets;
     vector<Planet> &bodies();
