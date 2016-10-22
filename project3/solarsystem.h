@@ -6,14 +6,16 @@
 #include <string>
 #include <fstream>
 
+using namespace std;
+
 class SolarSystem{
 public:
     SolarSystem();
-    std::ofstream myfile, myfile2;
+    ofstream myfile, myfile2;
 
     double E_kin;
     double E_pot;
-    //double E_tot;
+    vector3 AngMom;
 
     // function to create a new planet
     Planet &createPlanet( vector3 position, vector3 velocity, double mass );
@@ -23,6 +25,7 @@ public:
 
     // forces and energies
     void ForceAndEnergy();
+    void ForceMercury();
 
     // write to file
     void WriteToFile(string filename, string filename2);
@@ -30,6 +33,7 @@ public:
     double KineticEnergy() const;
     double PotentialEnergy() const;
     double TotalEnergy() const;
+    double AngularMomentum();
 
     vector<Planet> planets;
     vector<Planet> &bodies();

@@ -4,22 +4,22 @@
 
 using namespace std;
 
-SolarSystem::SolarSystem(){
-    //E_kin;
-    //E_pot;
-}
+SolarSystem::SolarSystem(){}
 
 Planet& SolarSystem::createPlanet(vector3 position, vector3 velocity, double mass){
+
     planets.push_back( Planet(position, velocity, mass) );
     // return reference to newest added planet
     return planets.back();
 }
 
 int SolarSystem::NumberOfPlanets(){
+
     return planets.size();
 }
 
 vector<Planet> &SolarSystem::bodies(){
+
     return planets;
 }
 
@@ -46,18 +46,12 @@ void SolarSystem::ForceAndEnergy(){
             body1.force -= (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr);
             body2.force += (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr);
 
-            //body1.force += (m_G * dr_vector)/pow(dr,3);
-            //body2.force -= (m_G * dr_vector)/pow(dr,3);
-            // debugging output
-            //cout << body2.mass << endl;
-            //cout << body2.position(0)<< " " << body2.position(1) << " " << body2.position(2) << endl;
-            //cout << body2.force(0) << " " << body2.force(1) << " " << body2.force(2) << endl;
-            //cout << body2.force(1) << endl;
-
-            // updating energy and angular momentum
+            // updating potential energy and angular momentum
             E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
+            AngMom += body1.velocity.cross(dr_vector);
         }
 
+        // updating kinetic energy
         E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
     }
 }
@@ -82,17 +76,18 @@ void SolarSystem::ForceMercury(){
             vector3 dr_vector = body1.position - body2.position;
             double dr = dr_vector.length();
 
-            body1.force -= ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * angumom * angumom) / (dr * dr * c * c) );
-            body2.force += (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr);
+            //body1.force -= ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * angumom * angumom) / (dr * dr * c * c) );
+            //body2.force += ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * angumom * angumom) / (dr * dr * c * c) )
 
             // updating energy and angular momentum
             E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
+            AngMom += body1.velocity.cross(dr_vector);
         }
 
         E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
     }
 }
-}
+
 
 double SolarSystem::KineticEnergy() const {
 
@@ -109,21 +104,26 @@ double SolarSystem::TotalEnergy() const {
     return E_kin + E_pot;
 }
 
+double SolarSystem::AngularMomentum(){
+
+    return AngMom.length();
+}
+
 void SolarSystem::WriteToFile(string filename, string filename2){
+
     if(!myfile.is_open()) {
         myfile.open(filename.c_str(), ios_base::out);
     }
+
+    for( Planet &body : planets ){
+        myfile << body.position.x() << " " << body.position.y() << " " << body.position.z() << "\n";
+    }
+
 
     if (!myfile2.is_open()){
         myfile2.open(filename2.c_str(), ios_base::out);
     }
 
-    //myfile << "Number of planets in solar system: " << NumberOfPlanets() << endl;
-    for( Planet &body : planets ){
-        myfile << body.position.x() << " " << body.position.y() << " " << body.position.z() << "\n";
-    }
-
-    //myfile2 << "Number of planets in solar system: " << NumberOfPlanets() << endl;
     for( Planet &body : planets ){
         myfile2 << body.velocity.x() << " " << body.velocity.y() << " " << body.velocity.z() << "\n";
     }
