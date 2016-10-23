@@ -18,7 +18,6 @@ public:
     vector3 Mom_planets;
     vector3 Mom_sun;
     vector3 AngMom;
-    vector3 tolerance;
 
     // function to create a new planet
     Planet &createPlanet( vector3 position, vector3 velocity, double mass );
@@ -29,15 +28,14 @@ public:
     // forces and energies
     void ForceAndEnergy();
     void ForceMercury();
-
-    // write to file
-    void WriteToFile(string filename, string filename2);
-
     double KineticEnergy() const;
     double PotentialEnergy() const;
     double TotalEnergy() const;
     double AngularMomentum();
     void Momentum();
+
+    void WriteToFile(string filename, string filename2);
+
 
     vector<Planet> planets;
     vector<Planet> &bodies();

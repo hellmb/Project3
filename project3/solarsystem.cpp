@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 
+// member functions for class SolarSystem
+
 using namespace std;
 
 SolarSystem::SolarSystem(){}
@@ -25,6 +27,7 @@ vector<Planet> &SolarSystem::bodies(){
 
 void SolarSystem::ForceAndEnergy(){
 
+    // setting conserved quantities to be zero
     E_kin = 0;
     E_pot = 0;
     Mom_planets.zeros();
@@ -49,18 +52,20 @@ void SolarSystem::ForceAndEnergy(){
             body1.force -= (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr);
             body2.force += (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr);
 
-            // updating potential energy and angular momentum
+            // updating potential energy and momentum
             E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
-            AngMom += dr_vector.cross(body1.velocity);
             Mom_planets += body2.mass * body2.velocity;
         }
 
-        // updating kinetic energy
+        // updating kinetic energy, angular momentum and momentum
         E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
-        Mom_sun = sun_.mass * sun_.velocity;
+        AngMom += body1.position.cross(body1.velocity);
+        Mom_sun += sun_.mass * sun_.velocity;
     }
 }
 
+// function to calculate the special forces for Mercury and Sun only
+// adding a general relativity correction to the Newtonian force
 void SolarSystem::ForceMercury(){
 
     E_kin = 0;
@@ -68,26 +73,30 @@ void SolarSystem::ForceMercury(){
     AngMom.zeros();
 
     double m_G = 4 * M_PI * M_PI;
-    double c = 3e8;
+    double c = 63240;
 
     for(Planet &body : planets){
         // reset forces on all planets
         body.force.zeros();
     }
 
-    Planet &body_sun = planets[0];
-    Planet &body_mercury = planets[1];
+    for(int i = 0; i < NumberOfPlanets(); i++){
+        Planet &body1 = planets[i];
+        for(int j = i+1; j < NumberOfPlanets(); j++){
+            Planet &body2 = planets[j];
+            vector3 dr_vector = body1.position - body2.position;
+            vector3 dv_vector = body1.velocity - body2.velocity;
+            double dr = dr_vector.length();
 
-    vector3 dr_vector = body_sun.position - body_mercury.position;
-    double dr = dr_vector.length();
+            double l = (dr_vector.cross(dv_vector)).length();
+            body1.force -= ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * l * l) / (dr * dr * c * c) );
+            body2.force += ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * l * l) / (dr * dr * c * c) );
 
-    AngMom += dr_vector.cross(body_sun.velocity);
-    body_sun.force -= ( (m_G*body_sun.mass*body_mercury.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * AngMom.dot(AngMom)) / (dr * dr * c * c) );
-    body_mercury.force += ( (m_G*body_sun.mass*body_mercury.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * AngMom.dot(AngMom)) / (dr * dr * c * c) );
-
-    // updating energy
-    E_pot += - ( m_G * body_sun.mass * body_mercury.mass ) / dr;
-    E_kin += 0.5 * body_sun.mass * body_sun.velocity.length_squared();
+            // updating energy
+            E_pot += - ( m_G * body1.mass * body2.mass ) / dr;
+        }
+        E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
+    }
 
 }
 
@@ -108,24 +117,8 @@ double SolarSystem::TotalEnergy() const {
 }
 
 void SolarSystem::Momentum(){
-    vector3 tolerance = vector3(1e-2, 1e-2, 1e-2);
 
-    /*if ( (Mom_sun + Mom_planets).length() <= tolerance.length() ){
-        cout << Mom_sun.length() << " " << Mom_planets.length() << " " << tolerance.length() << endl;
-        cout << "Momentum preserved" << endl;
-    }
-    if( (Mom_sun.x() + Mom_planets.x() <= tolerance.x() ) && (Mom_sun.y() + Mom_planets.y() <= tolerance.y() ) && (Mom_sun.z() + Mom_planets.z() <= tolerance.z() ) ){
-        cout << Mom_sun.x() << " " << Mom_sun.y() << " " << Mom_sun.z() << endl;
-        cout << Mom_planets.x() << " " << Mom_planets.y() << " " << Mom_planets.z() << endl;
-        cout << "Momentum is preserved" << endl;
-    }
-    else {
-        cout << Mom_sun.x() << " " << Mom_sun.y() << " " << Mom_sun.z() << endl;
-        cout << Mom_planets.x() << " " << Mom_planets.y() << " " << Mom_planets.z() << endl;
-        cout << "Momentum not preserved" << endl;
-    }*/
-
-    cout << "(" << Mom_sun.x() + Mom_planets.x() << ", " << Mom_sun.y() + Mom_planets.y() << ", " << Mom_sun.z() + Mom_planets.z() << ")" << endl;
+    cout << "Momentum vector: " << "(" << Mom_sun.x() + Mom_planets.x() << ", " << Mom_sun.y() + Mom_planets.y() << ", " << Mom_sun.z() + Mom_planets.z() << ")" << endl;
 }
 
 

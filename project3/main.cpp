@@ -24,14 +24,15 @@ int main(int argc, char *argv[]) {
         Planet &sun = Solar_System.createPlanet(vector3(0, 0, 0), vector3(0, 0, 0), 1.0);
         Planet &earth = Solar_System.createPlanet(vector3(8.9232e-1, 4.5235e-1, -1.7817e-4), vector3(-2.9316, 5.5834, -2.0685e-4), 3e-6);
 
+        // coordinates of Earth in 2D, for checking our algorithms
+        //Planet &earth = Solar_System.createPlanet(vector3(1, 0, 0), vector3(0, 2*M_PI, 0), 3e-6);
+
         double T  = 5.0;
         double dt = 1e-3;
         int NumStep = T/dt;
-        //cout << NumStep << endl;
 
         Solar_System.ForceAndEnergy();
         double energy_bf = Solar_System.TotalEnergy();
-        //double mom_bf = ...
         double angmom_bf = Solar_System.AngularMomentum();
 
         // timing each algorithm
@@ -71,7 +72,6 @@ int main(int argc, char *argv[]) {
 
         Solar_System.ForceAndEnergy();
         double energy_bf = Solar_System.TotalEnergy();
-        //double mom_bf = ...
         double angmom_bf = Solar_System.AngularMomentum();
 
         Verlet integrator(dt);
@@ -86,21 +86,24 @@ int main(int argc, char *argv[]) {
         double angmom_af = Solar_System.AngularMomentum();
 
         cout << "Difference in energy: " << energy_af - energy_bf << endl;
-        cout << "Difference in angular momentum: " << angmom_bf - angmom_af << endl;
+        cout << "Difference in angular momentum: " << angmom_af - angmom_bf << endl;
     }
 
     else if( atoi(argv[1])  == 3 ){
-        // Sun-Earth-Jupiter, where the Sun is not the mass center
+        // Sun-Earth-Jupiter system
         // Jupiter's mass has to be changed manually, and vary between 1.0, 10.0 and 1000.0
 
-        Planet &sun = Solar_System.createPlanet(vector3(0, 0, 0), vector3(0, 0, 0), 1.0);
+        Planet &sun = Solar_System.createPlanet(vector3(3.5555e-3, 3.4437e-3, -1.5959e-4), vector3(-7.4438e-4, 2.4914e-3, 1.5295e-5), 1.0);
         Planet &earth = Solar_System.createPlanet(vector3(8.9232e-1, 4.5235e-1, -1.7817e-4), vector3(-2.9316, 5.5834, -2.0685e-4), 3e-6);
         Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 1.0);
         //Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 10.0);
         //Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 1000.0);
 
         double T  = 5.0;
+        // we used dt = 1e-5 for Jupiter with mass 1.0 and 10.0
         double dt = 1e-5;
+        // we used dt = 1e-7 for Jupiter with mass 1000.0
+        //double dt = 1e-7;
         long int NumStep = T/dt;
         cout << NumStep << endl;
 
@@ -108,11 +111,11 @@ int main(int argc, char *argv[]) {
         double energy_bf = Solar_System.TotalEnergy();
 
         Verlet integrator(dt);
-        for(int time = 0; time < NumStep; time++){
+        for(long int time = 0; time < NumStep; time++){
 
             integrator.integrate(Solar_System);
 
-            int printEvery = 100;
+            int printEvery = 1000;
             if(time % printEvery == 0) {
                 Solar_System.WriteToFile("../positions_3body.txt", "../velocities_3body.txt");
             }
@@ -120,7 +123,7 @@ int main(int argc, char *argv[]) {
 
         double energy_af = Solar_System.TotalEnergy();
 
-        cout << "Difference in energy: " << energy_bf - energy_af << endl;
+        cout << "Difference in energy: " << energy_af - energy_bf << endl;
 
     }
 
@@ -138,8 +141,8 @@ int main(int argc, char *argv[]) {
         Planet &neptune = Solar_System.createPlanet(vector3(2.8266e+1, -9.9074, -4.4740e-1), vector3(0.3712, 1.0881, -0.0308), 5.15e-5);
         Planet &pluto = Solar_System.createPlanet(vector3(9.4392, -3.1817e+1, 6.7425e-1), vector3(1.1240, 0.0922, -0.0331), 6.55e-9);
 
-        // years -> T = 1 -> 1 earth year
-        double T  = 100.0; // for pluto to go all the way around
+        // for pluto to go all the way around
+        double T  = 300.0;
         double dt = 1e-4;
         long int NumStep = T/dt;
         cout << NumStep << endl;
@@ -148,7 +151,7 @@ int main(int argc, char *argv[]) {
         double energy_bf = Solar_System.TotalEnergy();
 
         Verlet integrator(dt);
-        for(int time = 0; time < NumStep; time++){
+        for(long int time = 0; time < NumStep; time++){
 
             integrator.integrate(Solar_System);
 
@@ -160,8 +163,7 @@ int main(int argc, char *argv[]) {
 
         double energy_af = Solar_System.TotalEnergy();
         Solar_System.Momentum();
-
-        cout << "Difference in energy: " << energy_bf - energy_af << endl;
+        cout << "Difference in energy: " << energy_af - energy_bf << endl;
 
     }
 
@@ -171,62 +173,49 @@ int main(int argc, char *argv[]) {
         Planet &sun = Solar_System.createPlanet(vector3(0, 0, 0), vector3(0, 0, 0), 1.0);
         Planet &mercury = Solar_System.createPlanet(vector3(0.3075, 0, 0), vector3(0, 12.44, 0), 1.65e-7);
 
-        double T = 20.0;
-        double dt = 1e-6;
-        long int NumStep = T/dt;
-        cout << NumStep << endl;
+        ofstream myfile;
+        string filename = "../perhelion_angle_GR.txt";
+        if(!myfile.is_open()) {
+            myfile.open(filename.c_str(), ios_base::out);
+        }
 
-        Solar_System.ForceAndEnergy();
-        double energy_bf = Solar_System.TotalEnergy();
+        vector<Planet> &bodies = Solar_System.bodies();
+
+        double T = 20.0;
+        double dt = 1e-8;
+        long int NumStep = T/dt;
 
         double rPrevPrev = 0;
         double rPrev = 0;
         double r = 0;
 
-        vector3 PrevPos(0, 0, 0);
+        double thetaPrev = 0;
 
         Verlet integrator(dt);
-        for(int time = 0; time < NumStep; time++){
+        for(long int time = 0; time < NumStep; time++){
 
             integrator.integrate(Solar_System);
 
-            Planet &body_sun = Solar_System.planets[0];
-            Planet &body_mercury = Solar_System.planets[1];
-            vector3 pos = body_mercury.position - body_sun.position;
-            r = pos.length();
+            double x = bodies[1].position.x() - bodies[0].position.x();
+            double y = bodies[1].position.y() - bodies[0].position.y();
+            double thetaCurrent = atan2(y, x);
 
-            if(r > rPrev && rPrev < rPrevPrev){
-                // every new position where Mercury is at perihelion
-                double x = PrevPos.x();
-                double y = PrevPos.y();
-                double z = PrevPos.z();
+            double rCurrent = (bodies[1].position - bodies[0].position).length();
 
-                double degree = atan2(y, x);
-                double arc_sec = ( 3600 * 180 / M_PI ) * degree;
+            if(rCurrent > rPrev && rPrev < rPrevPrev){
+                // entered the loop when Mercury was at its closest to the Sun
 
-                cout << "Perihelion angle: " << atan2(y, x) << endl;
-                cout << "Arc seconds: " << arc_sec << endl;
-                cout << "Time: " << time << endl;
-
+                myfile << thetaPrev << endl;
+                myfile << time << endl;
             }
 
             rPrevPrev = rPrev;
-            rPrev = r;
-            PrevPos = pos;
-
-            int printEvery = 1000;
-            if(time % printEvery == 0) {
-                Solar_System.WriteToFile("../positions_perihelion.txt", "../velocities_perihelion.txt");
-            }
+            rPrev = rCurrent;
+            thetaPrev = thetaCurrent;
         }
-
-        double energy_af = Solar_System.TotalEnergy();
-
-        cout << "Difference in energy: " << energy_bf - energy_af << endl;
-
     }
 
-    cout << "Number of planets: " << Solar_System.NumberOfPlanets()<< endl;
+    cout << "Number of planets in our solar system: " << Solar_System.NumberOfPlanets()<< endl;
 
     return 0;
 }

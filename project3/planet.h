@@ -3,7 +3,6 @@
 
 #include "vector3.h"
 
-// class Planet -> stores position, velocity and mass by calling vector3 class
 class Planet{
 public:
     vector3 position;

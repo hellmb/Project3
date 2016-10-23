@@ -14,7 +14,7 @@ Planet::Planet(double x, double y, double z, double vx, double vy, double vz, do
 }
 
 void Planet::ResetForce(){
-    // reset force for every new planet -> create new vector of zeros
+    // reset force for every new planet
     force.zeros();
 }
 
