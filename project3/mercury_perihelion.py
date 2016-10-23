@@ -3,9 +3,10 @@ from numpy import zeros
 from mpl_toolkits.mplot3d import Axes3D
 
 # load data from textfile with positions
-positions = loadtxt('positions.txt')
+positions = loadtxt('positions_perihelion.txt')
 NumPlanets = 2
 n = len(positions[:,0])/NumPlanets
+print len(positions[:,0])/NumPlanets
 
 # create empty arrays
 pos_sun = zeros((n, 3))
@@ -22,22 +23,23 @@ for i in range(n):
 fig = figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.plot(pos_sun[:,0], pos_sun[:,1], pos_sun[:,2])
-ax.plot(pos_mercury[:,0], pos_mercury[:,1], pos_mercury[:,2])
+ax.plot(pos_mercury[:,0], pos_mercury[:,1], pos_mercury[:,2], 'darkslategrey')
 
 
-'''
-ax.scatter(0, 0, 0, s=200, c='y')
+ax.scatter(0, 0, 0, s=500, c='y')
 ax.text(0, 0, 0, 'Sun')
-ax.scatter(pos_earth[0,0], pos_earth[0,1], pos_earth[0,2], s=50, c='b')
-ax.text(pos_earth[0,0], pos_earth[0,1], pos_earth[0,2], 'Earth')
-ax.scatter(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], s=1000, c='orange')
-ax.text(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], 'Jupiter')
-'''
+ax.scatter(pos_mercury[0,0], pos_mercury[0,1], pos_mercury[0,2], s=100, c='darkslategrey')
+ax.text(pos_mercury[0,0], pos_mercury[0,1], pos_mercury[0,2], 'Mercury')
 
 ax.set_title(r'Perihelion of Mercury')
 ax.set_xlabel(r'$x$', fontsize=20)
 ax.set_ylabel(r'$y$', fontsize=20)
 ax.set_zlabel(r'$z$', fontsize=20)
+
+#plot(pos_sun[:, 0], pos_sun[:, 1])
+#plot(pos_mercury[:, 0], pos_mercury[:, 1])
+#text(pos_sun[0,0], pos_sun[0,1], 'Sun')
+#text(pos_mercury[0,0], pos_mercury[0,1], 'Mercury')
 
 show()
 

@@ -3,7 +3,7 @@ from numpy import zeros
 from mpl_toolkits.mplot3d import Axes3D
 
 # load data from textfile with positions
-positions = loadtxt('positions.txt')
+positions = loadtxt('positions_3body.txt')
 n = len(positions[:,0])/3
 
 # create empty arrays
@@ -23,22 +23,21 @@ for i in range(n):
 # plot the planet positions in the same plot
 fig = figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.plot(pos_sun[:,0], pos_sun[:,1], pos_sun[:,2], 'yo', label='Sun')
-ax.plot(pos_earth[:,0], pos_earth[:,1], pos_earth[:,2], c='b', label='Earth orbit')
-ax.plot(pos_jupiter[:,0], pos_jupiter[:,1], pos_jupiter[:,2], c='orange', label='Jupiter orbit')
+ax.plot(pos_sun[:,0], pos_sun[:,1], pos_sun[:,2], 'y')
+ax.plot(pos_earth[:,0], pos_earth[:,1], pos_earth[:,2], c='b')
+ax.plot(pos_jupiter[:,0], pos_jupiter[:,1], pos_jupiter[:,2], c='orange')
 
 
 ax.scatter(0, 0, 0, s=200, c='y')
 ax.text(0, 0, 0, 'Sun')
 ax.scatter(pos_earth[0,0], pos_earth[0,1], pos_earth[0,2], s=50, c='b')
 ax.text(pos_earth[0,0], pos_earth[0,1], pos_earth[0,2], 'Earth')
-ax.scatter(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], s=1000, c='orange')
+ax.scatter(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], s=100, c='orange')
 ax.text(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], 'Jupiter')
 
-#ax.set_title('Earth-Sun system')
-ax.set_title(r'Jupiter with mass $M_{\odot}$')
+#ax.set_title(r'Jupiter with mass $M_{\odot}$')
 #ax.set_title(r'Jupiter with mass $10M_{\odot}$')
-#ax.set_title(r'Jupiter with mass $1000M_{\odot}$')
+ax.set_title(r'Jupiter with mass $1000M_{\odot}$')
 ax.set_xlabel(r'$x$', fontsize=20)
 ax.set_ylabel(r'$y$', fontsize=20)
 ax.set_zlabel(r'$z$', fontsize=20)

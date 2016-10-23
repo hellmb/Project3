@@ -27,12 +27,12 @@ void SolarSystem::ForceAndEnergy(){
 
     E_kin = 0;
     E_pot = 0;
+    AngMom.zeros();
 
     double m_G = 4 * M_PI * M_PI;
 
     for(Planet &body : planets){
         // reset forces on all planets
-        //body.ResetForce();
         body.force.zeros();
     }
 
@@ -48,7 +48,7 @@ void SolarSystem::ForceAndEnergy(){
 
             // updating potential energy and angular momentum
             E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
-            AngMom += body1.velocity.cross(dr_vector);
+            AngMom += dr_vector.cross(body1.velocity);
         }
 
         // updating kinetic energy
@@ -60,32 +60,30 @@ void SolarSystem::ForceMercury(){
 
     E_kin = 0;
     E_pot = 0;
+    AngMom.zeros();
 
     double m_G = 4 * M_PI * M_PI;
-    double c = 2.99e8;
+    double c = 3e8;
 
     for(Planet &body : planets){
         // reset forces on all planets
         body.force.zeros();
     }
 
-    for(int i = 0; i < NumberOfPlanets(); i++){
-        Planet &body1 = planets[i];
-        for(int j = i+1; j < NumberOfPlanets(); j++){
-            Planet &body2 = planets[j];
-            vector3 dr_vector = body1.position - body2.position;
-            double dr = dr_vector.length();
+    Planet &body_sun = planets[0];
+    Planet &body_mercury = planets[1];
 
-            //body1.force -= ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * angumom * angumom) / (dr * dr * c * c) );
-            //body2.force += ( (m_G*body1.mass*body2.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * angumom * angumom) / (dr * dr * c * c) )
+    vector3 dr_vector = body_sun.position - body_mercury.position;
+    double dr = dr_vector.length();
 
-            // updating energy and angular momentum
-            E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
-            AngMom += body1.velocity.cross(dr_vector);
-        }
+    AngMom += dr_vector.cross(body_sun.velocity);
+    body_sun.force -= ( (m_G*body_sun.mass*body_mercury.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * AngMom.dot(AngMom)) / (dr * dr * c * c) );
+    body_mercury.force += ( (m_G*body_sun.mass*body_mercury.mass*dr_vector) / (dr*dr*dr) ) * (1.0 + (3.0 * AngMom.dot(AngMom)) / (dr * dr * c * c) );
 
-        E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
-    }
+    // updating energy
+    E_pot += - ( m_G * body_sun.mass * body_mercury.mass ) / dr;
+    E_kin += 0.5 * body_sun.mass * body_sun.velocity.length_squared();
+
 }
 
 

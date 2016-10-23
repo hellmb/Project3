@@ -15,6 +15,8 @@ void Euler::integrate(SolarSystem &system){
     for(Planet &body : system.bodies()){
         body.position += body.velocity * h;
         body.velocity += body.force / body.mass * h;
-        cout << body.position(0)*body.position(0) + body.position(1)*body.position(1) + body.position(2)*body.position(2) << endl;
     }
 }
+
+
+

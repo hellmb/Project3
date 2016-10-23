@@ -10,4 +10,5 @@ public:
     void integrate(class SolarSystem &system);
 };
 
+
 #endif // EULER_H
