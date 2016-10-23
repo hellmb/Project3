@@ -27,6 +27,8 @@ void SolarSystem::ForceAndEnergy(){
 
     E_kin = 0;
     E_pot = 0;
+    Mom_planets.zeros();
+    Mom_sun.zeros();
     AngMom.zeros();
 
     double m_G = 4 * M_PI * M_PI;
@@ -37,6 +39,7 @@ void SolarSystem::ForceAndEnergy(){
     }
 
     for(int i = 0; i < NumberOfPlanets(); i++){
+        Planet &sun_ = planets[0];
         Planet &body1 = planets[i];
         for(int j = i+1; j < NumberOfPlanets(); j++){
             Planet &body2 = planets[j];
@@ -49,10 +52,12 @@ void SolarSystem::ForceAndEnergy(){
             // updating potential energy and angular momentum
             E_pot += - ( m_G * body2.mass * body1.mass ) / dr;
             AngMom += dr_vector.cross(body1.velocity);
+            Mom_planets += body2.mass * body2.velocity;
         }
 
         // updating kinetic energy
         E_kin += 0.5 * body1.mass * body1.velocity.length_squared();
+        Mom_sun = sun_.mass * sun_.velocity;
     }
 }
 
@@ -101,6 +106,28 @@ double SolarSystem::TotalEnergy() const {
 
     return E_kin + E_pot;
 }
+
+void SolarSystem::Momentum(){
+    vector3 tolerance = vector3(1e-2, 1e-2, 1e-2);
+
+    /*if ( (Mom_sun + Mom_planets).length() <= tolerance.length() ){
+        cout << Mom_sun.length() << " " << Mom_planets.length() << " " << tolerance.length() << endl;
+        cout << "Momentum preserved" << endl;
+    }
+    if( (Mom_sun.x() + Mom_planets.x() <= tolerance.x() ) && (Mom_sun.y() + Mom_planets.y() <= tolerance.y() ) && (Mom_sun.z() + Mom_planets.z() <= tolerance.z() ) ){
+        cout << Mom_sun.x() << " " << Mom_sun.y() << " " << Mom_sun.z() << endl;
+        cout << Mom_planets.x() << " " << Mom_planets.y() << " " << Mom_planets.z() << endl;
+        cout << "Momentum is preserved" << endl;
+    }
+    else {
+        cout << Mom_sun.x() << " " << Mom_sun.y() << " " << Mom_sun.z() << endl;
+        cout << Mom_planets.x() << " " << Mom_planets.y() << " " << Mom_planets.z() << endl;
+        cout << "Momentum not preserved" << endl;
+    }*/
+
+    cout << "(" << Mom_sun.x() + Mom_planets.x() << ", " << Mom_sun.y() + Mom_planets.y() << ", " << Mom_sun.z() + Mom_planets.z() << ")" << endl;
+}
+
 
 double SolarSystem::AngularMomentum(){
 

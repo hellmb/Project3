@@ -15,7 +15,10 @@ public:
 
     double E_kin;
     double E_pot;
+    vector3 Mom_planets;
+    vector3 Mom_sun;
     vector3 AngMom;
+    vector3 tolerance;
 
     // function to create a new planet
     Planet &createPlanet( vector3 position, vector3 velocity, double mass );
@@ -34,6 +37,7 @@ public:
     double PotentialEnergy() const;
     double TotalEnergy() const;
     double AngularMomentum();
+    void Momentum();
 
     vector<Planet> planets;
     vector<Planet> &bodies();

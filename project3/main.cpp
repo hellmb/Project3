@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 
+#include "time.h"
 #include "vector3.h"
 #include "planet.h"
 #include "solarsystem.h"
@@ -26,12 +27,16 @@ int main(int argc, char *argv[]) {
         double T  = 5.0;
         double dt = 1e-3;
         int NumStep = T/dt;
-        cout << NumStep << endl;
+        //cout << NumStep << endl;
 
         Solar_System.ForceAndEnergy();
         double energy_bf = Solar_System.TotalEnergy();
         //double mom_bf = ...
         double angmom_bf = Solar_System.AngularMomentum();
+
+        // timing each algorithm
+        clock_t start, finish;
+        start = clock();
 
         //Euler integrator(dt);
         Verlet integrator(dt);
@@ -42,10 +47,14 @@ int main(int argc, char *argv[]) {
 
         }
 
+        finish = clock();
+        cout << "Time algorithm: " << ( (double) ( finish - start ) / ((double)CLOCKS_PER_SEC )) << endl;
+
         double energy_af = Solar_System.TotalEnergy();
         double angmom_af = Solar_System.AngularMomentum();
+        Solar_System.Momentum();
 
-        cout << "Difference in energy: " << energy_bf - energy_af << endl;
+        cout << "Difference in energy: " << energy_af - energy_bf << endl;
         cout << "Difference in angular momentum: " << angmom_af - angmom_bf << endl;
     }
 
@@ -76,19 +85,19 @@ int main(int argc, char *argv[]) {
         double energy_af = Solar_System.TotalEnergy();
         double angmom_af = Solar_System.AngularMomentum();
 
-        cout << "Difference in energy: " << energy_bf - energy_af << endl;
-        cout << "Difference in angular momentum: " << angmom_af - angmom_bf << endl;
+        cout << "Difference in energy: " << energy_af - energy_bf << endl;
+        cout << "Difference in angular momentum: " << angmom_bf - angmom_af << endl;
     }
 
     else if( atoi(argv[1])  == 3 ){
         // Sun-Earth-Jupiter, where the Sun is not the mass center
         // Jupiter's mass has to be changed manually, and vary between 1.0, 10.0 and 1000.0
 
-        Planet &sun = Solar_System.createPlanet(vector3(3.5555e-3, 3.4437e-3, -1.5959e-4), vector3(-7.4438e-4, 2.4914e-3, 1.5295e-5), 1.0);
+        Planet &sun = Solar_System.createPlanet(vector3(0, 0, 0), vector3(0, 0, 0), 1.0);
         Planet &earth = Solar_System.createPlanet(vector3(8.9232e-1, 4.5235e-1, -1.7817e-4), vector3(-2.9316, 5.5834, -2.0685e-4), 3e-6);
-        //Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 1.0);
+        Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 1.0);
         //Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 10.0);
-        Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 1000.0);
+        //Planet &jupiter = Solar_System.createPlanet(vector3(-5.4257, -4.8938e-1, 1.2337e-1), vector3(0.2153, -2.6128, 6.0411e-3), 1000.0);
 
         double T  = 5.0;
         double dt = 1e-5;
@@ -97,7 +106,6 @@ int main(int argc, char *argv[]) {
 
         Solar_System.ForceAndEnergy();
         double energy_bf = Solar_System.TotalEnergy();
-        //double mom_bf = ...
 
         Verlet integrator(dt);
         for(int time = 0; time < NumStep; time++){
@@ -111,7 +119,6 @@ int main(int argc, char *argv[]) {
         }
 
         double energy_af = Solar_System.TotalEnergy();
-        // check if momentum should be conserved for more than 2 bodies
 
         cout << "Difference in energy: " << energy_bf - energy_af << endl;
 
@@ -132,14 +139,13 @@ int main(int argc, char *argv[]) {
         Planet &pluto = Solar_System.createPlanet(vector3(9.4392, -3.1817e+1, 6.7425e-1), vector3(1.1240, 0.0922, -0.0331), 6.55e-9);
 
         // years -> T = 1 -> 1 earth year
-        double T  = 300.0; // for pluto to go all the way around
+        double T  = 100.0; // for pluto to go all the way around
         double dt = 1e-4;
         long int NumStep = T/dt;
         cout << NumStep << endl;
 
         Solar_System.ForceAndEnergy();
         double energy_bf = Solar_System.TotalEnergy();
-        //double mom_bf = ...
 
         Verlet integrator(dt);
         for(int time = 0; time < NumStep; time++){
@@ -153,8 +159,10 @@ int main(int argc, char *argv[]) {
         }
 
         double energy_af = Solar_System.TotalEnergy();
+        Solar_System.Momentum();
 
         cout << "Difference in energy: " << energy_bf - energy_af << endl;
+
     }
 
     else if( atoi(argv[1])  == 5 ){
