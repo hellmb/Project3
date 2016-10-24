@@ -14,11 +14,9 @@ pos_jupiter = zeros((n, 3))
 
 # fill arrays with positions
 for i in range(n):
-    #pos_sun[i,:]     = positions[3*i + 0, :]
+    pos_sun[i,:]     = positions[3*i + 0, :]
     pos_earth[i,:]   = positions[3*i + 1, :]
     pos_jupiter[i,:] = positions[3*i + 2, :]
-
-
 
 # plot the planet positions in the same plot
 fig = figure()
@@ -35,20 +33,11 @@ ax.text(pos_earth[0,0], pos_earth[0,1], pos_earth[0,2], 'Earth')
 ax.scatter(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], s=100, c='orange')
 ax.text(pos_jupiter[0,0], pos_jupiter[0,1], pos_jupiter[0,2], 'Jupiter')
 
-#ax.set_title(r'Jupiter with mass $M_{\odot}$')
+ax.set_title(r'Jupiter with mass $M_{\odot}$')
 #ax.set_title(r'Jupiter with mass $10M_{\odot}$')
-ax.set_title(r'Jupiter with mass $1000M_{\odot}$')
+#ax.set_title(r'Jupiter with mass $1000M_{\odot}$')
 ax.set_xlabel(r'$x$', fontsize=20)
 ax.set_ylabel(r'$y$', fontsize=20)
 ax.set_zlabel(r'$z$', fontsize=20)
 
 show()
-
-# ask bruder for animations!!
-
-
-
-
-
-
-

@@ -16,6 +16,11 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
+    if ( atoi(argv[1])  > 5 ){
+
+        cout << "Bad usage. Please insert value between 1-5." << endl;
+    }
+
     SolarSystem Solar_System = SolarSystem();
 
     if( atoi(argv[1]) == 1 ){
@@ -174,7 +179,8 @@ int main(int argc, char *argv[]) {
         Planet &mercury = Solar_System.createPlanet(vector3(0.3075, 0, 0), vector3(0, 12.44, 0), 1.65e-7);
 
         ofstream myfile;
-        string filename = "../perhelion_angle_GR.txt";
+        string filename = "../perihelion_angle_GR.txt";
+        //string filename = "../perihelion_angle_GR.txt";
         if(!myfile.is_open()) {
             myfile.open(filename.c_str(), ios_base::out);
         }

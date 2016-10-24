@@ -3,15 +3,10 @@ from numpy import zeros
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib
 
-
-#n = 1000
-
 # load data from textfile with positions
 positions = loadtxt('positions_system.txt')
 NumPlanets = 10
 n = len(positions[:,0])/NumPlanets
-print len(positions[:,0])/NumPlanets
-
 
 # create empty arrays
 pos_sun = zeros((n, 3))
@@ -39,7 +34,7 @@ for i in range(n):
     pos_pluto[i,:] 	 = positions[NumPlanets*i + 9, :]
 
 # split lists for inner planets
-half = len(pos_sun[:,0])/6
+half = len(pos_sun[:,0])/3
 print len(pos_mercury[:half, 0])
 
 
@@ -47,17 +42,17 @@ print len(pos_mercury[:half, 0])
 fig = figure()
 ax1 = fig.add_subplot(2, 1, 1, projection='3d')
 ax1.plot(pos_sun[:,0], pos_sun[:,1], pos_sun[:,2])
-ax1.plot(pos_mercury[:half,0], pos_mercury[:half,1], pos_mercury[:half,2])
-ax1.plot(pos_venus[:half,0], pos_venus[:half,1], pos_venus[:half,2])
-ax1.plot(pos_earth[:half,0], pos_earth[:half,1], pos_earth[:half,2])
-ax1.plot(pos_mars[:half,0], pos_mars[:half,1], pos_mars[:half,2])
+ax1.plot(pos_mercury[:,0], pos_mercury[:,1], pos_mercury[:,2], 'darkslategrey')
+ax1.plot(pos_venus[:,0], pos_venus[:,1], pos_venus[:,2], 'goldenrod')
+ax1.plot(pos_earth[:,0], pos_earth[:,1], pos_earth[:,2], 'b')
+ax1.plot(pos_mars[:,0], pos_mars[:,1], pos_mars[:,2], 'r')
 
 ax2 = fig.add_subplot(2, 1, 2, projection='3d')
-ax2.plot(pos_jupiter[:,0], pos_jupiter[:,1], pos_jupiter[:,2])
-ax2.plot(pos_saturn[:,0], pos_saturn[:,1], pos_saturn[:,2])
-ax2.plot(pos_uranus[:,0], pos_uranus[:,1], pos_uranus[:,2])
-ax2.plot(pos_neptune[:,0], pos_neptune[:,1], pos_neptune[:,2])
-ax2.plot(pos_pluto[:,0], pos_pluto[:,1], pos_pluto[:,2])
+ax2.plot(pos_jupiter[:,0], pos_jupiter[:,1], pos_jupiter[:,2], 'orange')
+ax2.plot(pos_saturn[:,0], pos_saturn[:,1], pos_saturn[:,2], 'y')
+ax2.plot(pos_uranus[:,0], pos_uranus[:,1], pos_uranus[:,2], 'b')
+ax2.plot(pos_neptune[:,0], pos_neptune[:,1], pos_neptune[:,2], 'g')
+ax2.plot(pos_pluto[:,0], pos_pluto[:,1], pos_pluto[:,2], 'grey')
 
 
 ax1.scatter(pos_sun[0,0], pos_sun[0,1], pos_sun[0,2], s=200, c='gold')
@@ -100,10 +95,3 @@ ax2.set_ylabel(r'$y$', fontsize=20)
 ax2.set_zlabel(r'$z$', fontsize=20)
 
 show()
-
-
-
-
-
-
-
